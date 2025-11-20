@@ -22,9 +22,10 @@ loginForm.addEventListener('submit', function (e) {
         // 处理后端返回的数据
         console.log(data);
         if (data.success) {
-            alert('登录成功');
+            //TODO:redirect过程
+            window.location.href = data.redirectUrl;
         } else {
-            alert('登录失败');
+            alert(data.message);
         }
     })
     .catch(error=> {

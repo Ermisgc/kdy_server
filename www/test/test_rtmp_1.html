@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>RTMP测试</title>
+    <script src="https://cdn.jsdelivr.net/npm/flv.js@latest/dist/flv.min.js"></script>
+</head>
+<body>
+    <h1>RTMP推拉流测试1</h1>
+    
+    <div>
+        <video id="videoElement" controls width="800" height="450"></video>
+    </div>
+    
+    <div>
+        <button onclick="playStream()">测试播放</button>
+        <button onclick="stopStream()">停止播放</button>
+    </div>
+
+    <script>
+        let flvPlayer = null;
+        
+        function playStream(streamName) {
+            if (flvPlayer) {
+                flvPlayer.destroy();
+            }
+
+            const videoElement = document.getElementById('videoElement');
+            if (flvjs.isSupported()) {
+                flvPlayer = flvjs.createPlayer({
+                    type: 'flv',
+                    url: `http://122.51.125.235/flv?app=flv&stream=stream123`
+                });
+                flvPlayer.attachMediaElement(videoElement);
+                flvPlayer.load();
+                flvPlayer.play();
+            }
+        }
+        
+        function stopStream() {
+            if (flvPlayer) {
+                flvPlayer.pause();
+                flvPlayer.unload();
+                flvPlayer.detachMediaElement();
+                flvPlayer.destroy();
+                flvPlayer = null;
+            }
+        }
+        
+        // 页面卸载时清理
+        window.addEventListener('beforeunload', stopStream);
+    </script>
+</body>
+</html>
