@@ -2,6 +2,7 @@
 #define KDY_API_HANDLER_H
 
 #include "utils.h"
+#include "server/http_base.h"
 #include <string>
 NAMESPACE_BEGIN {
 namespace api{

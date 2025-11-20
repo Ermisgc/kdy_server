@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>RTMP测试</title>
+    <script src="https://cdn.jsdelivr.net/npm/flv.js@latest/dist/flv.min.js"></script>
+</head>
+<body>
+    <h1>RTMP推拉流测试2</h1>
+    
+    <div>
+        <video id="videoElement" controls width="800" height="450"></video>
+    </div>
+    
+    <div>
+        <button onclick="playStream()">测试播放</button>
+        <button onclick="stopStream()">停止播放</button>
+    </div>
+
+    <script>
+        let flvPlayer = null;
+        
+        function playStream(streamName) {
+            if (flvPlayer) {
+                flvPlayer.destroy();
+            }
+            
+            // 从C++后端获取流地址（示例）
+            fetch(`/api/streams/status`)
+                .then(response => response.json())
+                .then(data => {
+                    if(!data.success){
+                        alert(data.message);
+                        return;
+                    }
+
+                    const streamArray = data.rtmp_list;
+                    if(streamArray && streamArray.length > 0) {
+                        // 获取第一个元素（索引0）
+                        const firstStream = streamArray[0];
+                        const videoElement = document.getElementById('videoElement');
+                        let stream_id = firstStream.stream_id;
+                        let rtmp_url = "http://122.51.125.235/flv?app=flv&stream=" + stream_id;
+                        if (flvjs.isSupported()) {
+                            flvPlayer = flvjs.createPlayer({
+                                type: 'flv',
+                                url: rtmp_url
+                            });
+                            flvPlayer.attachMediaElement(videoElement);
+                            flvPlayer.load();
+                            flvPlayer.play();
+                        }                 
+                    } else {
+                        alert("没有可用的流");
+                    }
+                })
+                .catch(error => {
+                    console.error('获取流地址失败:', error);
+                });
+        }
+        
+        function stopStream() {
+            if (flvPlayer) {
+                flvPlayer.pause();
+                flvPlayer.unload();
+                flvPlayer.detachMediaElement();
+                flvPlayer.destroy();
+                flvPlayer = null;
+            }
+        }
+        
+        // 页面卸载时清理
+        window.addEventListener('beforeunload', stopStream);
+    </script>
+</body>
+</html>

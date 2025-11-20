@@ -9,6 +9,12 @@
 !design/
 !design/**
 
+!doc/
+!doc/**
+
+!cmake/
+!cmake/**
+
 !CMakeLists.txt
 !Readme.md
 !.gitignore

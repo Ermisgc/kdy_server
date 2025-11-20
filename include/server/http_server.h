@@ -4,6 +4,7 @@
 #include "utils.h"
 #include <unordered_map>
 #include "server/mime_types.h"
+#include "http_base.h"
 
 NAMESPACE_BEGIN{ namespace api {
     class APIHandler;  //针对单个API执行某个handle行为
@@ -14,7 +15,7 @@ namespace server {
         std::unordered_map<std::string, api::APIHandler *> api_maps;
         server::EventLoop loop;
         server::InetAddress listenAddr;
-        muduo::net::HttpServer server;  //注意这里的loop listenAddr和server必须按照这个顺序来，不能重排
+        TcpServer server;  //注意这里的loop listenAddr和server必须按照这个顺序来，不能重排
         MimeTypeDetector mime_detector;
 
     public:
@@ -28,8 +29,18 @@ namespace server {
     private:
         void onRequest(const HttpRequest & req, HttpResponse * resp);
 
+        void onMessage(const TcpConnectionPtr & conn, Buffer * buf, TimeStamp receiveTime);
+
+        void onConnection(const TcpConnectionPtr& conn);
+
+        /**
+         * @brief 404处理
+         */
         void handleNotFound(const HttpRequest & req, HttpResponse * resp);
 
+        /**
+         * @brief 405处理
+         */
         void handleMethodNotAllowed(const HttpRequest & req, HttpResponse * resp);
     };
 }}
