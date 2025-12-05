@@ -24,7 +24,8 @@ set(LIBRARTY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 link_libraries(${PROJECT_SOURCE_DIR}/lib)
 
 set(ALL_LIBRARIES ${MUDUO_LIBRARIES}
-                ${MYSQL_LIBRARIES})
+                ${MYSQL_LIBRARIES}
+                mosquittopp)
 
 # 添加你的可执行文件
 add_subdirectory(${PROJECT_SOURCE_DIR}/src)

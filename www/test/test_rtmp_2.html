@@ -40,7 +40,7 @@
                         const firstStream = streamArray[0];
                         const videoElement = document.getElementById('videoElement');
                         let stream_id = firstStream.stream_id;
-                        let rtmp_url = "http://122.51.125.235/flv?app=flv&stream=" + stream_id;
+                        let rtmp_url = "http://122.51.125.235/live?app=live&stream=" + stream_id;
                         if (flvjs.isSupported()) {
                             flvPlayer = flvjs.createPlayer({
                                 type: 'flv',

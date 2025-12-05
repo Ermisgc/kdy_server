@@ -27,4 +27,4 @@
     }
 }
 ```
-这里`stream_id`需要与推流地址对应，推流时推到：`rtmp://122.51.125.235:1935/live/${stream_id}`，前端拉流时会从`http://122.51.125.235/flv?app=flv&stream=${stream_id}`中获取流。
+这里`stream_id`需要与推流地址对应，推流时推到：`rtmp://122.51.125.235:1935/live/${stream_id}`，前端拉流时会从`http://122.51.125.235/live?app=live&stream=${stream_id}`中获取流。

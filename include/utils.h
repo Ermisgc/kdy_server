@@ -54,6 +54,13 @@ namespace server{
 #ifdef NLOHMANN_DEFINE_TYPE_INTRUSIVE
 #define DEFINE_JSON(type, ...) NLOHMANN_DEFINE_TYPE_INTRUSIVE(type, __VA_ARGS__)
 #else
-    
 #endif
+
+//有关mqtt的宏定义
+#define MQTT_SERVER_HOST "mqtts.heclouds.com"
+#define MQTT_USERNAME "B6WOt3UsAW"
+#define MQTT_PASSWORD "version=2018-10-31&res=products%2FB6WOt3UsAW%2Fdevices%2Fdht11&et=1778643159&method=md5&sign=onUGGPNPVDt3QmOntx8coA%3D%3D"
+#define MQTT_CLIENTID "test"
+
+#define DEVICE_TIMEOUT_SECOND 30
 #endif

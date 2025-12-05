@@ -49,7 +49,11 @@ sudo rpm --import RPM-GPG-KEY-mysql-2023
 sudo yum install mysql-connector-c++-devel  # Ubuntu改为apt-get install
 ```
 
-- `paho-mqtt`，Eclipse的MQTT库，这里选择编译安装。
+- `Mosquitto`，MQTT的官方库，这里选择yum安装(库与开发工具)：
+```bash
+sudo yum install -y mosquitto mosquitto-devel # Ubuntu改为apt-get install
+```
+
 
 
 ## 编译

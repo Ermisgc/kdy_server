@@ -1,7 +1,10 @@
 #include "server/http_server.h"
 #include "api/api_handler.h"
-#include "api/login_handler.h"
+#include "api/api_login_handler.h"
+#include "api/api_streams_status_handler.h"
+#include "api/device_heartbeat_handler.h"
 #include <iostream>
+#include "rtp/mqtt.h"
 
 USING_NAMESPACE;
 
@@ -16,23 +19,19 @@ int main() {
 
     api::HelloPageHandler hello_api;
     api::LoginHandler login_api;
+    api::DeviceListHandler stream_status_api;
+    api::DeviceHeartbeatHandler heartbeat_api;
 
     server.addApi("/", &hello_api);
     server.addApi("/api/login", &login_api);
+    server.addApi("/api/streams/status", &stream_status_api);
+    server.addApi("/device/heartbeat", &heartbeat_api);
 
-    server.start();
+    rtp::MqttClient client(MQTT_CLIENTID);
+    client.connect(MQTT_SERVER_HOST, 1883);  //TLS加密端口
+    auto rc = mosquitto_tls_opts_set();
+    client.loop_start();
+
+    // server.start();
     return 0;
 }
-
-// #define FEILD_NAME(...) \
-//     std::string fieldsName() { \
-//         std::string names = #__VA_ARGS__;  \
-//         return names; \
-//     }
-
-// FEILD_NAME(user_name, user_password, id)
-
-// int main(){
-//     std::cout << fieldsName() << std::endl;
-//     return 0;
-// }

@@ -180,7 +180,7 @@ NAMESPACE_BEGIN{ namespace server{
 
         if(auto itr = api_maps.find(path); itr != api_maps.end()){  //case1.handle api calling
             itr->second->handle(req, resp);
-        } else {  //case2. handle file get
+        } else {  //case2. handle file getting
             path = HTML_BASE + path;
             std::ifstream file(path, std::ios::binary | std::ios::ate);
             if (!file.is_open()) {
