@@ -20,7 +20,6 @@ NAMESPACE_BEGIN{ namespace rtp {
         void on_message(const struct mosquitto_message * msg) override;
         void on_subscribe(int mid, int qos_count, const int* granted_qos) override;
         void stop();
-
     private:
     };
 

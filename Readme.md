@@ -68,20 +68,3 @@ sudo yum install -y mosquitto mosquitto-devel # Ubuntu改为apt-get install
 - `design`，部分尚未实现功能的设计图
 
 提交时注意提交到自己的分支，然后由管理员一起合并。
-
-# 主要工作安排和进展
-## 前端
-- [x] Login的前端页面，HTML、CSS和JS
-- [ ] 各个前端页面
-- [ ] 前端的状态信息显示、测点信息等
-- [ ] 前端的视频流，用js的MSE
-- [ ] 前端的相机控制和服务器控制功能实现
-
-## 后端
-- [x] 端口转发和基本服务器框架
-- [ ] 后端WebSocket协议实现，用于主动推送视频
-- [ ] MQTT客户端集成，获取视频、调整摄像头参数
-- [ ] 视频文件暂定于H.264编码，利用WebSocket推送，调用cv的函数即可
-- [ ] Login API，注册功能实现，需要和数据库打交道
-- [ ] MySQL功能集成，用HTTP调用Restful API直接访问MySQL
-- [ ] 前端API的实现

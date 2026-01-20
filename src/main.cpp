@@ -4,7 +4,7 @@
 #include "api/api_streams_status_handler.h"
 #include "api/device_heartbeat_handler.h"
 #include <iostream>
-#include "rtp/mqtt.h"
+// #include "rtp/mqtt.h"
 
 USING_NAMESPACE;
 
@@ -27,11 +27,8 @@ int main() {
     server.addApi("/api/streams/status", &stream_status_api);
     server.addApi("/device/heartbeat", &heartbeat_api);
 
-    rtp::MqttClient client(MQTT_CLIENTID);
-    client.connect(MQTT_SERVER_HOST, 1883);  //TLS加密端口
-    auto rc = mosquitto_tls_opts_set();
-    client.loop_start();
+    // client.loop_start();
 
-    // server.start();
+    server.start();
     return 0;
 }

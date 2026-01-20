@@ -6,7 +6,6 @@ NAMESPACE_BEGIN{ namespace rtp{
     MqttClient::MqttClient(const char * id): mosquittopp(id){
         std::lock_guard<std::mutex> locker(lib_mtx);
         if(lib_ref_count == 0){
-            
             auto rc = mosqpp::lib_init();
             if(rc != MOSQ_ERR_SUCCESS){
                 LOG_ERROR << "Failed to initialize Mosquitto library";
@@ -47,14 +46,6 @@ NAMESPACE_BEGIN{ namespace rtp{
     }
 
     void MqttClient::on_message(const struct mosquitto_message * msg) {
-        // struct mosquitto_message{
-        //     int mid;
-        //     char *topic;
-        //     void *payload;
-        //     int payloadlen;
-        //     int qos;
-        //     bool retain;
-        // };
         LOG_INFO << "Message received on topic: " << msg->topic;
         LOG_INFO << "Message: " << msg->payload;
     }
