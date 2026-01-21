@@ -54,8 +54,6 @@ sudo yum install mysql-connector-c++-devel  # Ubuntu改为apt-get install
 sudo yum install -y mosquitto mosquitto-devel # Ubuntu改为apt-get install
 ```
 
-
-
 ## 编译
 配置好了之后可以直接尝试`./autobuild.sh`编译，然后`./bin/test_server`运行
 
