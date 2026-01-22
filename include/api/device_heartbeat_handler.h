@@ -8,7 +8,7 @@ NAMESPACE_BEGIN{ namespace api{
     struct DeviceHeartbeatResponse{
         bool success;
         std::string message;
-        rtp::DeviceParams params;
+        rtp::CameraConfig params;
 
         DEFINE_JSON(DeviceHeartbeatResponse,success,message,params)
     };

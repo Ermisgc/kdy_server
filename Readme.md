@@ -49,10 +49,44 @@ sudo rpm --import RPM-GPG-KEY-mysql-2023
 sudo yum install mysql-connector-c++-devel  # Ubuntu改为apt-get install
 ```
 
-- `Mosquitto`，MQTT的官方库，这里选择yum安装(库与开发工具)：
+- `Eclipse Paho MQTT C++客户端库`用于客户端进程间通信（基于MQTT协议订阅与发布）
+使用`#include<mqtt/async_client.h>`导入
+安装步骤：
+先编译安装 `Paho C` 库（c++库的前置依赖）
 ```bash
-sudo yum install -y mosquitto mosquitto-devel # Ubuntu改为apt-get install
+# 1. 下载源码
+git clone https://github.com/eclipse/paho.mqtt.c.git
+cd paho.mqtt.c
+
+# 2. 创建并进入构建目录
+mkdir build
+cd build
+
+# 3. 配置、编译并安装（默认启用SSL支持）
+cmake -DCMAKE_BUILD_TYPE=Release -DPAHO_WITH_SSL=ON -DPAHO_BUILD_SHARED=ON ..
+make
+sudo make install
 ```
+
+- 编译安装 `Paho C++` 库
+```bash
+# 1. 下载源码
+git clone https://github.com/eclipse/paho.mqtt.cpp.git
+cd paho.mqtt.cpp
+
+# 2. 创建并进入构建目录
+mkdir build
+cd build
+
+# 3. 配置、编译并安装
+cmake -DCMAKE_BUILD_TYPE=Release -DPAHO_BUILD_SAMPLES=ON ..
+make
+sudo make install
+```
+
+
+
+
 
 ## 编译
 配置好了之后可以直接尝试`./autobuild.sh`编译，然后`./bin/test_server`运行

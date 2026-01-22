@@ -1,52 +1,110 @@
 #include "rtp/mqtt.h"
 NAMESPACE_BEGIN{ namespace rtp{
-    int MqttClient::lib_ref_count{0};
-    std::mutex MqttClient::lib_mtx;
+    json get_fixed_control_command() {
+        ImagingParams dd;
+        json ret;
+        to_json(ret, dd);
+        return ret;
+    }
 
-    MqttClient::MqttClient(const char * id): mosquittopp(id){
-        std::lock_guard<std::mutex> locker(lib_mtx);
-        if(lib_ref_count == 0){
-            auto rc = mosqpp::lib_init();
-            if(rc != MOSQ_ERR_SUCCESS){
-                LOG_ERROR << "Failed to initialize Mosquitto library";
-            }
+    void MQTTClientCallback::connected(const std::string& cause) {
+        LOG_INFO << "MQTT Connected...";
+        if(!client_) return;
+        try {
+            //要改为批量订阅
+            client_->subscribe(DISTANCE_TOPIC, MQTT_QOS);
+            auto ret = client_->subscribe(CAMERA_CONTROL_TOPIC, MQTT_QOS);
+            ret->wait();
+            LOG_INFO << "MQTT Subscribe: " << DISTANCE_TOPIC << ", " << CAMERA_CONTROL_TOPIC;
+        } catch (const mqtt::exception& e) {
+            LOG_ERROR << "MQTT Subscrible Failed: " << e.what();
         }
-        lib_ref_count ++;
     }
 
-    MqttClient::~MqttClient(){
-        this->loop_stop();
+    void MQTTClientCallback::connection_lost(const std::string& cause) {
+        LOG_WARN << "MQTT disconnect: " << (cause.empty() ? "Unknown" : cause);
+    }
+
+    void MQTTClientCallback::message_arrived(mqtt::const_message_ptr msg) {
+        try {
+            std::string topic = msg->get_topic();
+            std::string payload = msg->get_payload_str();
+            json data = json::parse(payload);            
+            if (topic == DISTANCE_TOPIC) {
+                process_distance_data(data);
+            } else if(topic == CAMERA_CONTROL_TOPIC){
+                process_camera_data(data);
+            }
+        } catch (const std::exception& e) {
+            LOG_ERROR << "MQTT Process failed: " << e.what();
+        }
+    }
+    
+    bool MQTTClientCallback::send_control_command(const json& command) {
+        if(!client_) return false;
+        try {
+            std::string payload = command.dump();
+            mqtt::message_ptr msg = mqtt::make_message(CAMERA_CONTROL_TOPIC, payload);
+            msg->set_qos(MQTT_QOS);
+            
+            auto pub_token = client_->publish(msg);
+            pub_token->wait();
+            
+            return true;
+        } catch (const mqtt::exception& e) {
+            LOG_ERROR << "MQTT send command failed: " << e.what();
+            return false;
+        }
+    }
+
+    void MQTTClientCallback::process_distance_data(const json& data) {  //点位数据的Data并未传送
+        DistanceData dd; 
         
-        std::lock_guard<std::mutex> locker(lib_mtx);
-        lib_ref_count --;
-        if(lib_ref_count == 0) auto rc = mosqpp::lib_cleanup();
+        try {
+            from_json(data, dd);
+        } catch (const std::exception& e){}
     }
 
-    void MqttClient::on_connect(int rc) {
-        if (rc == 0) LOG_INFO << "MQTT Connect Successful";
-        else LOG_WARN << "MQTT Connection Fail: " << rc;
-
-        static constexpr std::string PID = "B6WOt3UsAW";
-        static constexpr std::string DEVICE_NAME = "dht11";
-
-        std::string propertyset = "$sys/";
-        propertyset += PID;
-        propertyset += "/";
-        propertyset += DEVICE_NAME;
-        propertyset += "/thing/property/set";
-        subscribe(nullptr, propertyset.c_str() , 1);  //TODO:需要了解subscribe的各项参数
+    void MQTTClientCallback::process_camera_data(const json & data){
+        CameraConfig cc;
+        try{
+            from_json(data, cc);
+            MQTTClient::getInstance().setCameraConfig(cc);
+        } catch (const std::exception & e){}
     }
 
-    void MqttClient::on_subscribe(int mid, int qos_count, const int* granted_qos) {
-        LOG_INFO << "Subscribe Done, id: " << mid;
+    MQTTClient::MQTTClient(const std::string & broker, const std::string & client_id): client(broker, client_id) {
+        conn_opts.set_clean_session(true);
+        conn_opts.set_keep_alive_interval(60);
+        conn_opts.set_automatic_reconnect(true);
+        conn_opts.set_connect_timeout(10);
+        callback.set_client(&client);
+        client.set_callback(callback);
+        this->client_id = client_id;
     }
 
-    void MqttClient::on_disconnect(int rc) {
-        if (rc == 0) LOG_INFO << "MQTT DisConnect Successful";
+    MQTTClient::~MQTTClient(){
+        client.disconnect();
     }
 
-    void MqttClient::on_message(const struct mosquitto_message * msg) {
-        LOG_INFO << "Message received on topic: " << msg->topic;
-        LOG_INFO << "Message: " << msg->payload;
+    bool MQTTClient::connect(const std::string & user_name, const std::string & password) {
+        conn_opts.set_user_name(user_name);
+        conn_opts.set_password(password);       
+        auto conntok = client.connect(conn_opts); 
+        if (conntok->wait_for(std::chrono::seconds(2)))  return true;
+        else return false;
+    }
+
+    void MQTTClient::sendCameraInfo(const CameraConfig & cc){
+        json json_cc;
+        to_json(json_cc, cc);
+        callback.send_control_command(json_cc);
+    }
+
+    MQTTClient & MQTTClient::getInstance(){
+        static const std::string CLIENT_ID = "host_b_simple_" + std::to_string(std::time(nullptr));
+        static MQTTClient instance(MQTT_BROKER, CLIENT_ID);
+        // if(!instance.is_connected()) instance.connect(MQTT_USERNAME, MQTT_PASSWORD);
+        return instance;
     }
 }}

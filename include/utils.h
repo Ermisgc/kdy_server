@@ -52,14 +52,19 @@ namespace server{
 
 //有关json处理的宏
 #ifdef NLOHMANN_DEFINE_TYPE_INTRUSIVE
+//定义to_json、from_json的序列化和反序列化方法
 #define DEFINE_JSON(type, ...) NLOHMANN_DEFINE_TYPE_INTRUSIVE(type, __VA_ARGS__)
 #else
 #endif
 
 //有关mqtt的宏定义
-#define MQTT_SERVER_HOST "mqtts.heclouds.com"
-#define MQTT_USERNAME "B6WOt3UsAW"
-#define MQTT_PASSWORD "version=2018-10-31&res=products%2FB6WOt3UsAW%2Fdevices%2Fdht11&et=1778643159&method=md5&sign=onUGGPNPVDt3QmOntx8coA%3D%3D"
+#define MQTT_HOST "120.27.205.147:1883"
+#define MQTT_BROKER "tcp://120.27.205.147:1883"
+#define DISTANCE_TOPIC "/distance"
+#define CAMERA_CONTROL_TOPIC "/camera_params"
+#define MQTT_QOS 1
+#define MQTT_USERNAME "MQTT3"
+#define MQTT_PASSWORD "123456"
 #define MQTT_CLIENTID "test"
 
 #define DEVICE_TIMEOUT_SECOND 30

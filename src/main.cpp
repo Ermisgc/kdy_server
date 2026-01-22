@@ -3,6 +3,7 @@
 #include "api/api_login_handler.h"
 #include "api/api_streams_status_handler.h"
 #include "api/device_heartbeat_handler.h"
+#include "api/api_config_mqtt_handler.h"
 #include <iostream>
 // #include "rtp/mqtt.h"
 
@@ -21,13 +22,15 @@ int main() {
     api::LoginHandler login_api;
     api::DeviceListHandler stream_status_api;
     api::DeviceHeartbeatHandler heartbeat_api;
+    api::ConfigMQTTHandler config_mqtt_api(false);
+    api::ConfigMQTTHandler config_mqtt2_api(true);
 
     server.addApi("/", &hello_api);
     server.addApi("/api/login", &login_api);
     server.addApi("/api/streams/status", &stream_status_api);
     server.addApi("/device/heartbeat", &heartbeat_api);
-
-    // client.loop_start();
+    server.addApi("/api/config/mqtt", &config_mqtt_api);
+    server.addApi("/api/config/mqtt2", &config_mqtt2_api);
 
     server.start();
     return 0;

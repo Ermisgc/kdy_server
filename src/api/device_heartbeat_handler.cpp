@@ -19,7 +19,7 @@ NAMESPACE_BEGIN { namespace api{
         auto & dm = rtp::DeviceManager::instance();
         if(auto ret = dm.getDeviceParams(device_name)){
             if(ret.has_value()){
-                DeviceHeartbeatResponse response{true, "Check Params", *ret.value()};
+                DeviceHeartbeatResponse response{true, "Check Params", ret.value()};
                 resp->setStatusMessage("Ok");
                 resp->setBody(json(response).dump());                
             }
@@ -28,7 +28,7 @@ NAMESPACE_BEGIN { namespace api{
         //Step2. 再修改相机的信息
         auto success = rtp::DeviceManager::instance().freshDevice(j);
         if(success){
-            DeviceHeartbeatResponse response{true, "First Connect", *dm.getDeviceParams(device_name).value()};
+            DeviceHeartbeatResponse response{true, "First Connect", dm.getDeviceParams(device_name).value()};
             resp->setStatusMessage("Ok");
             resp->setBody(json(response).dump());   
         } else {

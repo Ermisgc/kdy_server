@@ -23,3 +23,6 @@
 
 !www/
 !www/**
+
+!test/
+!test/**

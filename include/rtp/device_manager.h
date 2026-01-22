@@ -8,7 +8,6 @@
 NAMESPACE_BEGIN{ namespace rtp{
     class DeviceManager{
         std::unordered_map<std::string, Device> device_map;
-        
     public:
         static DeviceManager & instance();
         
@@ -16,7 +15,7 @@ NAMESPACE_BEGIN{ namespace rtp{
 
         bool freshDevice(const json & j);
 
-        std::optional<const DeviceParams *> getDeviceParams(const std::string & device_name) const;
+        std::optional<CameraConfig> getDeviceParams(const std::string & device_name) const;
     };
 }}    
 
