@@ -8,9 +8,8 @@ NAMESPACE_BEGIN{ namespace api{
         for(auto & de: res){
             rif.emplace_back(Device2RtmpInfo(de));
         }
-
-        static const DeviceListApiResponse noDeviceFoundJson(false, "当前没有可用设备");
-
+        
+        static const DeviceListApiResponse noDeviceFoundJson(false, "No device found.");
         int count = res.size();
         if(count == 0){
             resq->setStatusCode(server::HttpResponse::k200Ok);
@@ -18,7 +17,7 @@ NAMESPACE_BEGIN{ namespace api{
             resq->setContentType("text/plain");
             resq->setBody(json(noDeviceFoundJson).dump());
         } else {
-            DeviceListApiResponse deviceList(true, "当前" + std::to_string(count) + "个设备可用", rif);
+            DeviceListApiResponse deviceList(true, std::to_string(count) + " devices is active.", rif);
             resq->setStatusCode(server::HttpResponse::k200Ok);
             resq->setStatusMessage("OK");
             resq->setContentType("text/plain");

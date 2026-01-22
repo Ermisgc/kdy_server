@@ -16,6 +16,7 @@ set(MUDUO_LIBRARIES muduo_base muduo_net muduo_http)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 find_package(MySQL REQUIRED)
+find_package(PahoMqttCpp REQUIRED)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
@@ -25,7 +26,10 @@ link_libraries(${PROJECT_SOURCE_DIR}/lib)
 
 set(ALL_LIBRARIES ${MUDUO_LIBRARIES}
                 ${MYSQL_LIBRARIES}
-                mosquittopp)
+                # mosquittopp
+                PahoMqttCpp::paho-mqttpp3)
 
 # 添加你的可执行文件
 add_subdirectory(${PROJECT_SOURCE_DIR}/src)
+
+add_subdirectory(${PROJECT_SOURCE_DIR}/test)
