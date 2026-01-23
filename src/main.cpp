@@ -4,6 +4,7 @@
 #include "api/api_streams_status_handler.h"
 #include "api/device_heartbeat_handler.h"
 #include "api/api_config_mqtt_handler.h"
+#include "api/api_measure_points_handler.h"
 #include <iostream>
 // #include "rtp/mqtt.h"
 
@@ -24,6 +25,7 @@ int main() {
     api::DeviceHeartbeatHandler heartbeat_api;
     api::ConfigMQTTHandler config_mqtt_api(false);
     api::ConfigMQTTHandler config_mqtt2_api(true);
+    api::MeasurePointHandler measure_points_api;
 
     server.addApi("/", &hello_api);
     server.addApi("/api/login", &login_api);
@@ -31,6 +33,7 @@ int main() {
     server.addApi("/device/heartbeat", &heartbeat_api);
     server.addApi("/api/config/mqtt", &config_mqtt_api);
     server.addApi("/api/config/mqtt2", &config_mqtt2_api);
+    server.addApi("/api/measure-points", &measure_points_api);
 
     server.start();
     return 0;

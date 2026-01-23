@@ -2,11 +2,14 @@
 #define KDY_API_MEASURE_POINTS_H
 #include "utils.h"
 #include "api_handler.h"
-#include "rtp/mqtt.h"
+#include <string>
+#include <unordered_map>
+#include "db/kdy_db_api.h"
+#include "rtp/mqtt_types.h"
 
 NAMESPACE_BEGIN {
 namespace api{
-    struct CameraConfigResponse {
+    struct MeasurePointResponse {
         bool success = false;
         std::string message;
         std::vector<rtp::MeasurePoint> data;
