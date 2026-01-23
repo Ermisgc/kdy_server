@@ -62,7 +62,8 @@ namespace server{
 #define MQTT_BROKER "tcp://120.27.205.147:1883"
 #define DISTANCE_TOPIC "/distance"
 #define CAMERA_CONTROL_TOPIC "/camera_params"
-#define MQTT_QOS 1
+#define CAMERA_MESSAGE_TOPIC "/CCC"
+#define MQTT_QOS 0
 #define MQTT_USERNAME "MQTT3"
 #define MQTT_PASSWORD "123456"
 #define MQTT_CLIENTID "test"
