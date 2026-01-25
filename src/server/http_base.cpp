@@ -1,5 +1,29 @@
 #include "server/http_base.h"
 NAMESPACE_BEGIN { namespace server{
+    std::map<std::string, std::string> UrlParser::parseQuery(const std::string& query_str) {
+        std::map<std::string, std::string> params;
+        std::stringstream ss(query_str);
+        std::string segment;
+        while (std::getline(ss, segment, '&')) {
+            auto pos = segment.find('=');
+            if (pos != std::string::npos) {
+                params[segment.substr(0, pos)] = segment.substr(pos + 1);
+            }
+        }
+        return params;
+    }
+
+    void UrlParser::splitPathAndQuery(const std::string& raw_url, std::string& path_out, std::string& query_out) {
+        auto pos = raw_url.find('?');
+        if (pos != std::string::npos) {
+            path_out = raw_url.substr(0, pos);
+            query_out = raw_url.substr(pos + 1);
+        } else {
+            path_out = raw_url;
+            query_out = "";
+        }
+    }
+
     void HttpResponse::appendToBuffer(Buffer* buf) const {
         char tmpBuf[32];
         // 状态行,如 HTTP/1.1 200 OK

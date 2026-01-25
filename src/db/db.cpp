@@ -67,39 +67,6 @@ NAMESPACE_BEGIN{ namespace db{
         try{
             std::unique_ptr<sql::Statement> stmt = std::unique_ptr<sql::Statement>(_connection->createStatement());
             std::unique_ptr<sql::ResultSet> result = std::unique_ptr<sql::ResultSet>(stmt->executeQuery(query));
-
-            // // 获取元数据查看列信息
-            // sql::ResultSetMetaData* meta = result->getMetaData();
-            // int column_count = meta->getColumnCount();
-
-            // std::cout << "=== 查询结果详情 ===" << std::endl;
-            // std::cout << "列数: " << column_count << std::endl;
-
-            // // 打印列名
-            // std::cout << "列名: ";
-            // for (int i = 1; i <= column_count; i++) {
-            //     std::cout << meta->getColumnName(i) << " (" 
-            //             << meta->getColumnTypeName(i) << ") | ";
-            // }
-            // std::cout << std::endl;
-
-            // // 遍历所有行
-            // int row_num = 0;
-            // while (result->next()) {
-            //     std::cout << "第 " << ++row_num << " 行: ";
-            //     for (int i = 1; i <= column_count; i++) {
-            //         try {
-            //             std::string value = result->getString(i);
-            //             std::cout << "[" << value << "] ";
-            //         } catch (const sql::SQLException& e) {
-            //             std::cout << "[ERROR: " << e.what() << "] ";
-            //         }
-            //     }
-            //     std::cout << std::endl;
-            // }
-
-            // std::cout << "总行数: " << row_num << std::endl;
-
             return std::make_unique<QueryResult>(result);
         } catch(const sql::SQLException & e) {
             return std::nullopt;

@@ -11,16 +11,31 @@ NAMESPACE_BEGIN { namespace server{
         kInvalid, kHttp10, kHttp11
     };
 
+    class UrlParser {
+    public:
+        /**
+         * @brief 解析查询参数: duration=60&type=1 -> map
+         */
+        static std::map<std::string, std::string> parseQuery(const std::string& query_str);
+
+        /**
+         * @brief 分离路径和查询串: /abc?q=1 -> {"/abc", "q=1"}
+         */
+        static void splitPathAndQuery(const std::string& raw_url, std::string& path_out, std::string& query_out);
+    };
+    
     /**
      * @brief Http请求类的封装，仿照muduo网络库封装，但支持body
      */
     class HttpRequest {
         HttpMethod method_;        
-        std::string path_;         
         HttpVersion version_;     
         std::map<std::string, std::string> headers_;
         std::string body_;
     public:
+        std::string path_;      ///< 真实路径
+        std::string sub_path;   ///< 后缀路径
+        std::map<std::string, std::string> params_;
         HttpRequest() : method_(HttpMethod::kInvalid), version_(HttpVersion::kInvalid) {}
 
         void setMethod(HttpMethod method) { method_ = method; }

@@ -12,11 +12,17 @@ NAMESPACE_BEGIN{ namespace api {
     
 namespace server {
     class HTTPServer{
-        std::unordered_map<std::string, api::APIHandler *> api_maps;
         server::EventLoop loop;
         server::InetAddress listenAddr;
         TcpServer server;  //注意这里的loop listenAddr和server必须按照这个顺序来，不能重排
         MimeTypeDetector mime_detector;
+
+        struct RouteEntry{
+            std::string prefix;
+            api::APIHandler * handler;
+        };
+        std::unordered_map<std::string, api::APIHandler *> api_maps;    //精确匹配表
+        std::vector<RouteEntry> wildcard_routes;                        //路由匹配表
 
     public:
         HTTPServer(const uint16_t port, const std::string & name);

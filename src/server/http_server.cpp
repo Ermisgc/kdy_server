@@ -171,6 +171,7 @@ NAMESPACE_BEGIN{ namespace server{
         // 解析请求
         std::string path = req.path();
         HttpMethod method = req.method();
+        // UrlParser::splitPathAndQuery(path, req.path_, )
         LOG_INFO << "Request: " << req.methodString() << " " << path;
 
         if(method != HttpMethod::kGet && method != HttpMethod::kPost){
@@ -178,9 +179,11 @@ NAMESPACE_BEGIN{ namespace server{
             return;
         }
 
-        if(auto itr = api_maps.find(path); itr != api_maps.end()){  //case1.handle api calling
+        if(auto itr = api_maps.find(path); itr != api_maps.end()){  //case1. 精确匹配
             itr->second->handle(req, resp);
-        } else {  //case2. handle file getting
+        } else if(0) {  //case2. TODO:前缀路由匹配
+
+        } else {  //case3. 静态文件获取
             path = HTML_BASE + path;
             std::ifstream file(path, std::ios::binary | std::ios::ate);
             if (!file.is_open()) {
@@ -221,6 +224,14 @@ NAMESPACE_BEGIN{ namespace server{
     }
 
     void HTTPServer::addApi(const std::string & api_name, api::APIHandler * api_handler){
-        api_maps[api_name] = api_handler;
+        size_t len = api_name.length();
+        if(len > 2 && api_name.substr(len - 2) == "/*"){
+            //通配符匹配，放到路由表
+            std::string prefix = api_name.substr(0, len - 1);
+            wildcard_routes.emplace_back(prefix, api_handler);
+            std::sort(wildcard_routes.begin(), wildcard_routes.end(), [](const RouteEntry & a, const RouteEntry &b){
+                return a.prefix.length() > b.prefix.length();
+            });
+        } else api_maps[api_name] = api_handler;
     }
 }}

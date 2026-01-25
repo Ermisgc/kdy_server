@@ -2,6 +2,7 @@
 #define KDY_KDY_DB_API_H
 #include "utils.h"
 #include "db/api_utils.h"
+#include "db/db_connection_pool.h"
 #include <optional>
 
 NAMESPACE_BEGIN{ namespace db{
@@ -44,6 +45,22 @@ NAMESPACE_BEGIN{ namespace db{
         }
 
         DEFINE_JSON(Displacement, id, ts, xplacement, yplacement)
+
+        static inline std::vector<Displacement> queryDuration(const std::string & id, uint64_t duration_seconds=60) {
+            duration_seconds *= 1000;  //seconds to milliseconds
+            std::string query = "SELECT ts, xplacement, yplacement FROM point_data WHERE id = " + to_sql_value(id) + 
+            " AND ts >= UNIX_TIMESTAMP() * 1000 - " + to_sql_value(duration_seconds) + " ORDER BY ts;";
+            auto ret = DBConnectionPool::instance().getConnection()->executeQuery(query);
+            std::vector<Displacement> ans;
+            if(ret.has_value()){
+                auto & qr = ret.value();
+                while (qr->next()) {
+                    Displacement obj = Displacement::fromDB(qr.get());
+                    ans.push_back(std::move(obj));
+                }
+            }
+            return ans;
+        }
     };
 }}
 
