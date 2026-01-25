@@ -2,6 +2,7 @@
 #define KDY_KDY_DB_API_H
 #include "utils.h"
 #include "db/api_utils.h"
+#include <optional>
 
 NAMESPACE_BEGIN{ namespace db{
     struct User{
@@ -20,6 +21,29 @@ NAMESPACE_BEGIN{ namespace db{
             qr >> ret.id >> ret.user_name >> ret.user_password >> ret.previlege;
             return ret;
         }
+    };
+
+    struct Displacement{
+        std::string id;
+        uint64_t ts;
+        double xplacement;
+        double yplacement;
+        TABLE_NAME("point_data")
+        INSERT_TO_DB(id, ts, xplacement, yplacement)
+        std::string updateToDB() { assert(0); }  //禁止调用updateToDB函数
+
+        std::string deleteFromDB(){ 
+            return "DELETE FROM " + nonstatic_tableName + " WHERE id=" + to_sql_value(id) + " AND timestamp=" + to_sql_value(ts);
+        }
+
+        static Displacement fromDB(QueryResult * res){
+            Displacement ret;
+            QueryResult & qr = *res;
+            qr >> ret.ts >> ret.xplacement >> ret.yplacement;
+            return ret;            
+        }
+
+        DEFINE_JSON(Displacement, id, ts, xplacement, yplacement)
     };
 }}
 

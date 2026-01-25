@@ -88,7 +88,7 @@ NAMESPACE_BEGIN{ namespace db {
  * @brief 出于便利设计的宏，根据字段实现insertToDB()方法
  */
 #define INSERT_TO_DB(...) \
-    std::string insertToDB(){  \
+    std::string insertToDB() const{  \
         return "INSERT INTO " + nonstatic_tableName + " ( " + #__VA_ARGS__ + " ) VALUES ( " + invoke_fields(__VA_ARGS__) + " )"; \
     }    
 #endif

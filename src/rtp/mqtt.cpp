@@ -1,4 +1,5 @@
 #include "rtp/mqtt.h"
+#include "db/db_connection_pool.h"
 NAMESPACE_BEGIN{ namespace rtp{
     json get_fixed_control_command() {
         ImagingParams dd;
@@ -58,10 +59,10 @@ NAMESPACE_BEGIN{ namespace rtp{
     }
 
     void MQTTClientCallback::process_distance_data(const json& data) {  //点位数据的Data并未传送
-        DistanceData dd; 
-        
+        db::Displacement dd; 
         try {
             from_json(data, dd);
+            db::DBConnectionPool::instance().getConnection()->insert<db::Displacement>(dd);
         } catch (const std::exception& e){}
     }
 

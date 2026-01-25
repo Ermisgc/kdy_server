@@ -34,6 +34,7 @@ NAMESPACE_BEGIN { namespace db {
         QueryResult & operator>>(double & );
         QueryResult & operator>>(std::string &);
         QueryResult & operator>>(bool &);
+        QueryResult & operator>>(uint64_t &);
 
         /**
          * @brief 跳转到下一个数据行，如果已经是末行了，返回false

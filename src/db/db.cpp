@@ -28,6 +28,11 @@ NAMESPACE_BEGIN{ namespace db{
         return *this;
     }
 
+    QueryResult & QueryResult::operator>>(uint64_t &operand){
+        operand = operand = _sql_result ? _sql_result->getUInt64(_colomn_index++) : 0;
+        return *this;
+    }
+
     bool QueryResult::next(){
         _colomn_index = 1;
         return _sql_result ? _sql_result->next() : false;

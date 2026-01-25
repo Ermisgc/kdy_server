@@ -20,6 +20,8 @@ NAMESPACE_BEGIN{ namespace rtp{
             mp.id = points.size();
             mp.pointId = "123";
             mp.type = MeasurePointType::MAIN_REFERENCE;
+            mp.xDisplacement = 600;
+            mp.yDisplacement = 400;
             mp.coordinateX = 600;
             mp.coordinateY = 400;
             mp.enabled = true;

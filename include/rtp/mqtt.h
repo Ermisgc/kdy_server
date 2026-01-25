@@ -1,7 +1,7 @@
 #ifndef KDY_MQTT_H
 #define KDY_MQTT_H
 #include "utils.h"
-#include "mqtt_types.h"
+#include "rtp/mqtt_types.h"
 #include <mqtt/async_client.h>
 #include <mutex>
 #include <atomic>
@@ -53,8 +53,6 @@ NAMESPACE_BEGIN{ namespace rtp {
         static MQTTClient & getInstance();
 
         inline std::string cliendID() {return this->client_id;}
-
-        void setDistanceData(DistanceData & dd);
 
         inline void setCameraConfig(CameraConfig & cc) {
             std::lock_guard<std::mutex> locker(client_mtx);

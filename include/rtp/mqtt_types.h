@@ -1,6 +1,7 @@
 #ifndef KDY_RTP_MQTT_TYPES_H
 #define KDY_RTP_MQTT_TYPES_H
 #include "utils.h"
+#include "db/kdy_db_api.h"
 
 NAMESPACE_BEGIN{ namespace rtp{
     struct ImagingParams {
@@ -29,24 +30,7 @@ NAMESPACE_BEGIN{ namespace rtp{
 
     //<-------------------->//
 
-    struct Displacement {
-        double value = 0.0;
-        std::string unit = "mm";
-        DEFINE_JSON(Displacement, value, unit)
-    };
-
-    struct Params {
-        Displacement displacement;
-        DEFINE_JSON(Params, displacement)
-    };
-
-    struct DistanceData {
-        std::string id = "123";
-        std::string version = "1.0";
-        int64_t timestamp = 0;
-        Params params;
-        DEFINE_JSON(DistanceData, id, version, timestamp, params)
-    };
+    using Displacement = db::Displacement;
 
 
     //<----------------------------->//
